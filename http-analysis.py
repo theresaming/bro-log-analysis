@@ -77,26 +77,42 @@ while looper:
                 if s not in methods:
                     methods.append(s)
                     ind = methods.index(s)
-                    instances.append(0)
+                    instances.append(1)
                 else:
                     ind = methods.index(s)
                     instances[ind] += 1
-        print "METHOD" + '\t' + "INSTANCES" '\n'            
+        print "METHOD" + '\t' + "INSTANCES\n"
         for i in range(len(methods)):
             print methods[i] + '\t',instances[i]           
 
+    # * * * * * * * * * * * * *
+
+    # (3) Find breakdown of transferred file types
+    # headers needed: resp_mime_types(27)
+    if x == 3:
+        ftype = []
+        instances = []
+        for rownum in range(log.nrows):
+            if rownum > 1:
+                s = log.cell(rownum,27).value
+                if s not in ftype:
+                    ftype.append(s)
+                    ind = ftype.index(s)
+                    instances.append(1)
+                else:
+                    ind = ftype.index(s)
+                    instances[ind] += 1
+        print "FILE" + '\t' + "INSTANCES\n"
+        for i in range(len(ftype)):
+                print ftype[i] + '\t', instances[i]
+
+    # * * * * * * * * * * * * *                   
+    
     y = raw_input('Do you want to continue? (y/n): ')
     if y == 'y':
         continue
     if y == 'n':
         sys.exit()
-
-    # * * * * * * * * * * * * *
-
-    # (3) Find breakdown of transferred file types
-    # headers needed: 
-    
-
                         
             
         
