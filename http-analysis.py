@@ -17,8 +17,8 @@ while looper:
     print "(3) Find breakdown of transferred file types"
     print "(4) Find breakdown of all ports"
     print "(5) Failed connection attempts per source address"
-    print "(6) Distinct browsers in this trace"
-    print "(7) Top 10 referred hosts"
+    print "(6) EMPTY"
+    print "(7) RMPTY"
     print "(8) End program."
 
     #input value/choice
