@@ -17,8 +17,8 @@ while looper:
     print "(3) Find breakdown of transferred file types"
     print "(4) Find breakdown of all ports"
     print "(5) Failed connection attempts per source address"
-    print "(6) EMPTY"
-    print "(7) RMPTY"
+    print "(6) List of distinct browsers"
+    print "(7) EMPTY"
     print "(8) End program."
 
     #input value/choice
@@ -150,6 +150,19 @@ while looper:
         for i in range(len(hosts)):
             print hosts[i] + ', ',attempts[i]
                 
+    # * * * * * * * * * * * * *
+
+    # (6) List of distinct browsers
+    if x == 6:
+        browsers = []
+        for rownum in range(log.nrows):
+            e = log.cell(rownum,12).value
+            if e not in browsers:
+                browsers.append(e)
+        browsers.sort()        
+        for i in range(len(browsers)):
+            print browsers[i]
+
     # * * * * * * * * * * * * *
     
     y = raw_input('Do you want to continue? (y/n): ')
