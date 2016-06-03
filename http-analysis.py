@@ -15,7 +15,7 @@ while looper:
     print "(1) Find IP adresses of web servers that send more than 1 KB back to a client"
     print "(2) Find breakdown of http methods"
     print "(3) Find breakdown of transferred file types"
-    print "(4) 10 hosts that send the most traffic"
+    print "(4) Find breakdown of all ports"
     print "(5) 3 most commonly accessed websites"
     print "(6) Distinct browsers in this trace"
     print "(7) Top 10 referred hosts"
@@ -106,7 +106,28 @@ while looper:
         for i in range(len(ftype)):
                 print ftype[i] + '\t', instances[i]
 
-    # * * * * * * * * * * * * *                   
+    # * * * * * * * * * * * * *
+
+    # (4) Find breakdown of all ports
+    # headers needed: id.resp_p (7)
+    if x == 4:
+        ports = []
+        instances = []
+        for rownum in range(log.nrows):
+            if rownum > 1:
+                s = log.cell(rownum,6).value
+                if s not in ports:
+                    ports.append(s)
+                    ind = ports.index(s)
+                    instances.append(1)
+                else:
+                    ind = ports.index(s)
+                    instances[ind] += 1
+        print "PORTS" + '\t' + "INSTANCES\n"
+        for i in range(len(ports)):
+               print ports[i] + '\t', instances[i]
+               
+    # * * * * * * * * * * * * *
     
     y = raw_input('Do you want to continue? (y/n): ')
     if y == 'y':
