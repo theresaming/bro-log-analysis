@@ -16,7 +16,7 @@ while looper:
     print "(2) Find breakdown of http methods"
     print "(3) Find breakdown of transferred file types"
     print "(4) Find breakdown of all ports"
-    print "(5) 3 most commonly accessed websites"
+    print "(5) Failed connection attempts per source address"
     print "(6) Distinct browsers in this trace"
     print "(7) Top 10 referred hosts"
     print "(8) End program."
@@ -81,7 +81,7 @@ while looper:
                 else:
                     ind = methods.index(s)
                     instances[ind] += 1
-        print "METHOD" + '\t' + "INSTANCES\n"
+        print "METHOD" + '\t' + "INSTANCES"
         for i in range(len(methods)):
             print methods[i] + '\t',instances[i]           
 
@@ -102,7 +102,7 @@ while looper:
                 else:
                     ind = ftype.index(s)
                     instances[ind] += 1
-        print "FILE" + '\t' + "INSTANCES\n"
+        print "FILE" + '\t' + "INSTANCES"
         for i in range(len(ftype)):
                 print ftype[i] + '\t', instances[i]
 
@@ -117,16 +117,39 @@ while looper:
             if rownum > 1:
                 s = log.cell(rownum,6).value
                 if s not in ports:
-                    ports.append(s)
+                    ports.append(s) 
                     ind = ports.index(s)
                     instances.append(1)
                 else:
                     ind = ports.index(s)
                     instances[ind] += 1
-        print "PORTS" + '\t' + "INSTANCES\n"
+        print "PORTS" + '\t' + "INSTANCES"
         for i in range(len(ports)):
                print ports[i] + '\t', instances[i]
                
+    # * * * * * * * * * * * * *
+
+    # (5) Failed connection attempts per source address
+    # headers needed: hosts(9) info_code (17)
+    if x == 5:
+        hosts = []
+        attempts = []
+        for rownum in range(log.nrows):
+            if rownum > 1:
+                code = log.cell(rownum,15).value #value of error code
+                host = log.cell(rownum,9).value #value of host
+                if host not in hosts and (code.startswith("4") or code.startswith("5")):
+                    #if the code indicates failed connection
+                    hosts.append(host)
+                    ind = hosts.index(host)
+                    attempts.append(1)
+                elif host in hosts and (code.startswith("4") or code.startswith("5")):
+                    ind = hosts.index(host)
+                    attempts[ind] += 1
+        print "HOSTS" + ', ' + "ATTEMPTS"
+        for i in range(len(hosts)):
+            print hosts[i] + ', ',attempts[i]
+                
     # * * * * * * * * * * * * *
     
     y = raw_input('Do you want to continue? (y/n): ')
