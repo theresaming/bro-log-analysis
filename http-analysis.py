@@ -1,5 +1,5 @@
 #import gzip
-import xlwt, xlrd, sys, time
+import xlwt, xlrd, sys, datetime, time
 
 #automated data analysis on http logs
 
@@ -12,21 +12,22 @@ log = wb.sheet_by_index(0)
 looper = True
 while looper:
     print "HTTP Analysis - Options (type a number)"
-    print "(1) Find IP adresses of web servers that send more than 1 KB back to a client"
-    print "(2) Find breakdown of http methods"
-    print "(3) Find breakdown of transferred file types"
-    print "(4) Find breakdown of all ports"
+    print "(1) IP adresses of web servers that send more than 1 KB back to a client"
+    print "(2) Breakdown of http methods"
+    print "(3) Breakdown of transferred file types"
+    print "(4) Breakdown of all ports"
     print "(5) Failed connection attempts per source address"
     print "(6) List of distinct browsers"
-    print "(7) EMPTY"
-    print "(8) End program."
+    print "(7) Time interval anomalies based on host"
+    print "(8) Data based on UID"
+    print "(9) End program."
 
     #input value/choice
     try:
         x = input('Enter a value: ')
-        if x == 8:
+        if x == 9:
                 sys.exit()
-        if x < 1 or x > 8:
+        if x < 1 or x > 9:
             print "Not a valid number. Choose a number between 1 and 7."
     except ValueError:
         print "Not a valid number. Choose a number between 1 and 7."
@@ -164,6 +165,53 @@ while looper:
             print browsers[i]
 
     # * * * * * * * * * * * * *
+
+    # (7) Time interval anomalies based on host
+    if x == 7:
+        # input a host
+        times = [] #raw time information
+        uid = [] #uid of instances
+        intervals = [] #time intervals
+        hostinput = raw_input('Enter a host: ')
+        for rownum in range(log.nrows):
+            if rownum > 1:
+                hostcheck = log.cell(rownum,9).value
+                if hostcheck == hostinput:  # adds matching host times into the times array
+                    hosttime = log.cell(rownum,1).value
+                    t = datetime.datetime.strptime(hosttime, '%Y-%m-%d %H:%M:%S')
+                    times.append(t)
+                    #uid.append(log.cell(rownum,2).value)
+                    
+        for i in range(len(times) - 1):
+            intervals.append(times[i+1]-times[i]) #calculate time intervals
+
+        #print time intervals
+        #for j in range(len(intervals)):
+            #print str(intervals[j]) 
+        
+        instances = []
+        unique = []
+        u_uid = []
+        for k in range(len(intervals)):
+            if intervals[k] not in unique:
+                unique.append(intervals[k])
+                ind = unique.index(intervals[k]) #index of the corresponding unique time interval
+                instances.append(1)
+            else:
+                ind = unique.index(intervals[k])
+                instances[ind]+=1       
+        print "TIME INTERVALS" + '\t' + "INSTANCES"
+        for i in range(len(unique)):
+            print str(unique[i]),'\t',instances[i]
+                                   
+    # * * * * * * * * * * * * *
+    # (8) Data based on UID
+
+    if x == 8:
+        # input a UID
+        # all data
+        uid = raw_input('Enter a UID: ')
+        
     
     y = raw_input('Do you want to continue? (y/n): ')
     if y == 'y':
