@@ -1,5 +1,5 @@
 #import gzip
-import xlwt, xlrd, sys, datetime, time
+import xlwt, xlrd, sys, datetime, time, unicodedata
 
 #automated data analysis on http logs
 
@@ -173,7 +173,7 @@ while looper:
         uid = [] #uid of instances
         intervals = [] #time intervals
         hostinput = raw_input('Enter a host: ')
-        for rownum in range(log.nrows):
+        for rownum in range(log.nrows): #traverse 
             if rownum > 1:
                 hostcheck = log.cell(rownum,9).value
                 if hostcheck == hostinput:  # adds matching host times into the times array
@@ -200,7 +200,7 @@ while looper:
             else:
                 ind = unique.index(intervals[k])
                 instances[ind]+=1       
-        print "TIME INTERVALS" + '\t' + "INSTANCES"
+        print "TIME INTERVALS" + '\t' + "INSTANCES" + '\t' + "UIDs"
         for i in range(len(unique)):
             print str(unique[i]),'\t',instances[i]
                                    
@@ -210,8 +210,24 @@ while looper:
     if x == 8:
         # input a UID
         # all data
+        headerunicode = []
+        header = []
+        data = []
         uid = raw_input('Enter a UID: ')
-        
+        for item in log.row(0):
+            header.append(item.value)
+        #for item in header:
+#            print item
+        for rownum in range(log.nrows):
+            if rownum > 1:
+                uidcheck = log.cell(rownum,2).value
+                if (uidcheck == uid):
+                    for element in log.row(rownum):
+                        data.append(element.value)
+        for i in range(len(header)):
+            print header[i] + ': ' + data[i] + '\n'
+                    
+    # * * * * * * * * * * * * *
     
     y = raw_input('Do you want to continue? (y/n): ')
     if y == 'y':
