@@ -171,24 +171,20 @@ while looper:
         # input a host
         times = [] #raw time information
         uid = [] #uid of instances
-        intervals = [] #time intervals
+        
         hostinput = raw_input('Enter a host: ')
         for rownum in range(log.nrows): #traverse 
             if rownum > 1:
                 hostcheck = log.cell(rownum,9).value
                 if hostcheck == hostinput:  # adds matching host times into the times array
-                    hosttime = log.cell(rownum,1).value
-                    t = datetime.datetime.strptime(hosttime, '%Y-%m-%d %H:%M:%S')
-                    times.append(t)
-                    #uid.append(log.cell(rownum,2).value)
-                    
+                    hosttime = log.cell(rownum,1).value #find time of corresponding host
+                    t = datetime.datetime.strptime(hosttime, '%Y-%m-%d %H:%M:%S') #convert element to time 
+                    times.append(t) #append that element to the raw times
+                    uid.append(log.cell(rownum,2).value) #append the corresponding uid
+        intervals = [] #time intervals
         for i in range(len(times) - 1):
-            intervals.append(times[i+1]-times[i]) #calculate time intervals
-
-        #print time intervals
-        #for j in range(len(intervals)):
-            #print str(intervals[j]) 
-        
+            intervals.append(times[i+1]-times[i])
+            #calculate time intervals /choose times[i+1] index for uid     
         instances = []
         unique = []
         u_uid = []
@@ -197,16 +193,18 @@ while looper:
                 unique.append(intervals[k])
                 ind = unique.index(intervals[k]) #index of the corresponding unique time interval
                 instances.append(1)
+                u_uid.append(uid[k+1])
             else:
                 ind = unique.index(intervals[k])
+                u_uid.append(uid[k+1])
                 instances[ind]+=1       
-        print "TIME INTERVALS" + '\t' + "INSTANCES" + '\t' + "UIDs"
+        print "TIME INTERVALS" + '\t' + "INSTANCES" + '\t' + "UID"
         for i in range(len(unique)):
-            print str(unique[i]),'\t',instances[i]
+            print str(unique[i]),'\t',instances[i],'\t',u_uid[i]
                                    
     # * * * * * * * * * * * * *
-    # (8) Data based on UID
 
+    # (8) Data based on UID
     if x == 8:
         # input a UID
         # all data
@@ -217,7 +215,7 @@ while looper:
         for item in log.row(0):
             header.append(item.value)
         #for item in header:
-#            print item
+            #print item
         for rownum in range(log.nrows):
             if rownum > 1:
                 uidcheck = log.cell(rownum,2).value
