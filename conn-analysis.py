@@ -142,12 +142,11 @@ while looper:
                 if row[0] in cc:
                     ind = cc.index(row[0])
                     country[ind] = row[1]
-                    
         f = input("Check for occurrences less than (input a number): ")
         print "CC" + '\t' + "INSTANCES" + '\t' + "COUNTRY" 
         for i in range(len(cc)):
             if instances[i] < f:
-                print cc[i] + '\t', instances[i], '\t', country[i]y
+                print cc[i] + '\t', instances[i], '\t', country[i]
                 
 
     # * * * * * * * * * * * * *
