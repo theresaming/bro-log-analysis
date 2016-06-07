@@ -1,4 +1,4 @@
-import xlwt, xlrd, sys, datetime, time, unicodedata
+import xlwt, xlrd, sys, datetime, time, unicodedata, csv
 
 #automated data analysis on conn logs
 
@@ -15,10 +15,10 @@ while looper:
     print "(2) Breakdown of all connections by service"
     print "(3) Breakdown of all responding ports"
     print "(4) Breakdown of all transport layer protocols"
-    print "(5) EMPTY"
+    print "(5) Breakdown of all origination country codes"
     print "(6) EMPTY"
     print "(7) EMPTY"
-    print "(8) EMPTY"
+    print "(8) Data based on UID"
     print "(9) End program."
 
     try:
@@ -116,6 +116,62 @@ while looper:
         for i in range(len(proto)):
                print proto[i] + '\t', instances[i]
 
+    # * * * * * * * * * * * * *
+
+    # (5) Breakdown of all origination country codes
+    if x == 5:
+        cc = []
+        instances = []
+        
+        for rownum in range(log.nrows):
+            if rownum > 1:
+                s = (str)(log.cell(rownum,21).value)
+                if s not in cc:
+                    cc.append(s) 
+                    ind = cc.index(s)
+                    instances.append(1)
+                else:
+                    ind = cc.index(s)
+                    instances[ind] += 1
+        country = []
+        for i in range(len(cc)):
+            country.append('-')
+        with open('cc.csv', 'rb') as f:
+            reader = csv.reader(f)
+            for row in reader:
+                if row[0] in cc:
+                    ind = cc.index(row[0])
+                    country[ind] = row[1]
+                    
+        f = input("Check for occurrences less than (input a number): ")
+        print "CC" + '\t' + "INSTANCES" + '\t' + "COUNTRY" 
+        for i in range(len(cc)):
+            if instances[i] < f:
+                print cc[i] + '\t', instances[i], '\t', country[i]y
+                
+
+    # * * * * * * * * * * * * *
+
+    # (8) Data based on UID
+    if x == 8:
+        # input a UID
+        # all data
+        headerunicode = []
+        header = []
+        data = []
+        uid = raw_input('Enter a UID: ')
+        for item in log.row(0):
+            header.append(item.value)
+        #for item in header:
+            #print item
+        for rownum in range(log.nrows):
+            if rownum > 1:
+                uidcheck = log.cell(rownum,2).value
+                if (uidcheck == uid):
+                    for element in log.row(rownum):
+                        data.append(element.value)
+        for i in range(len(header)):
+            print header[i] + ': ' + data[i] + '\n'
     # * * * * * * * * * * * * *
     
     y = raw_input('Do you want to continue? (y/n): ')
